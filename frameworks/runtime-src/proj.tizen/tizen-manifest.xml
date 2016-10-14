@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns="http://tizen.org/ns/packages" api-version="2.3" package="org.cocos2dx.EasternDoor" version="1.0.0">
+    <ui-application appid="org.cocos2dx.EasternDoor" exec="hellolua" type="capp" multiple="false" taskmanage="true" nodisplay="false">
+        <icon>EasternDoor.png</icon>
+        <label>EasternDoor</label>
+	</ui-application>
+</manifest>
