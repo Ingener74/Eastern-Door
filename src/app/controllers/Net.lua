@@ -40,4 +40,8 @@ function Net:request(request, method)
 	end)
 end
 
+function Net:requestJson(req_table, method)
+	return self:request(json.encode(req_table), method)
+end
+
 return Net

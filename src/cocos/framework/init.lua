@@ -34,7 +34,7 @@ display    = require("cocos.framework.display")
 audio      = require("cocos.framework.audio")
 transition = require("cocos.framework.transition")
 
-Promise = require("cocos.framework.Promise")
+Promise    = require("cocos.framework.Promise")
 
 require("cocos.framework.extends.NodeEx")
 require("cocos.framework.extends.SpriteEx")

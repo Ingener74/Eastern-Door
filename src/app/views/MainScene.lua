@@ -3,6 +3,11 @@ local Net = require("app.controllers.Net")
 
 local MainScene = class("MainScene", cc.load("mvc").ViewBase)
 
+MainScene.BUTTON_WIDTH = 160
+MainScene.BUTTON_HEIGHT = 40
+MainScene.PADDING = 8
+MainScene.BUTTON_FONT_SIZE = 16
+
 function MainScene:onCreate()
 	local buttons = {}
 
@@ -80,6 +85,11 @@ function MainScene:onCreate()
 		end
 	end))
 
+	self._text = cc.Label:createWithTTF("Text", "fonts/Arial Bold.ttf", 24)
+	self._text:setAnchorPoint(0, 1)
+	self._text:setPosition(8, display.height - 200)
+	self:addChild(self._text)
+
 	table.insert(buttons, self:addButton("Create net", function()
 		self._net = Net:create('127.0.0.1', 9999)
 	end))
@@ -89,38 +99,44 @@ function MainScene:onCreate()
 			dump(result)
 			return self._net:request("{\"method\":\"m2\"}")
 		end):andThen(function(result)
+
+			self._text:setString(string.format("m2 = %d", result.result))
 			dump(result)
+
 		end):catch(function(err)
 			printError(err)
 		end)
 	end))
 
 	table.insert(buttons, self:addButton("Net request m3, m4", function()
-		self._net:request("{\"method\":\"m3\"}"):andThen(function(result)
+		self._net:requestJson({method = "m3"}):andThen(function(result)
 			dump(result)
-			return self._net:request("{\"method\":\"m4\"}")
+			return self._net:requestJson({method = "m4"})
 		end):andThen(function(result)
+			
+			self._text:setString(string.format("m4 = %d", result.result.r3))
 			dump(result)
+
 		end):catch(function(err)
 			printError(err)
 		end)
 	end))
 
 	table.insert(buttons, self:addButton("Remove net", function()
-		self._net:request("quit")
+		self._net:requestJson({method = "quit"})
 		self._net:stop()
 	end))
 
-	local x = 8
-	local y = display.height - 8
+	local x = self.PADDING
+	local y = display.height - self.PADDING
 
 	for i,button in ipairs(buttons) do
 		button:setPosition(x, y)
 
-		x = x + button:getContentSize().width + 8
-		if (x + 120 + 8) >= display.width then
-			x = 8
-			y = y - 40 - 8
+		x = x + button:getContentSize().width + self.PADDING
+		if (x + self.BUTTON_WIDTH + self.PADDING) >= display.width then
+			x = self.PADDING
+			y = y - self.BUTTON_HEIGHT - self.PADDING
 		end
 	end
 end
@@ -129,9 +145,9 @@ function MainScene:addButton(title, handler)
 	local button = ccui.Button:create("button.png", "buttonHighlighted.png", "buttonHighlighted.png")
 	button:setAnchorPoint(0, 1)
 	button:setScale9Enabled(true)
-	button:setContentSize(120, 40)
+	button:setContentSize(self.BUTTON_WIDTH, self.BUTTON_HEIGHT)
 	button:setTitleText(title)
-	button:setTitleFontSize(12)
+	button:setTitleFontSize(self.BUTTON_FONT_SIZE)
 	button:addClickEventListener(handler)
 	self:addChild(button)
 	return button
